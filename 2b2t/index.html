@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>2b2t queue simulator</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <style>
+      @import 'https://necolas.github.io/normalize.css/8.0.1/normalize.css';
+      /* @font-face kit by Fonts2u (https://fonts2u.com) */
+      @font-face {
+        font-family: 'Minecraft Regular';
+        src: url('./_Minecraft-Regular.eot?') format('eot'),
+          url('./1_Minecraft-Regular.woff') format('woff'),
+          url('./1_Minecraft-Regular.ttf') format('truetype'),
+          url('./1_Minecraft-Regular.svg#Minecraft-Regular') format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+      .end-sky {
+        width: 100vw;
+        height: 100vh;
+        background: url('./end_sky.png');
+      }
+      .end-sky-inner {
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.95));
+      }
+      .chat-box {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: left;
+        align-items: flex-end;
+      }
+      .chat {
+        color: #ffaa00;
+        background-color: rgba(0, 0, 0, 0.8);
+        font-size: 18px;
+        font-family: 'Minecraft Regular';
+        text-shadow: 1pt 1pt #2a2a00;
+        width: 640px;
+        max-height: 360px;
+        padding-left: 5px;
+        margin-bottom: 72px;
+        align-items: flex-end;
+        vertical-align: bottom;
+        font-smooth: never;
+        -moz-osx-font-smoothing: none;
+        -webkit-font-smoothing: none;
+      }
+      .chat li {
+        height: 18px;
+        overflow: hidden;
+      }
+      .chat b {
+        letter-spacing: 1.5px;
+        text-shadow: 1pt 0pt #ffaa00, 3pt 2pt #2a2a00;
+      }
+      .crash {
+        background: url('./dirt.png');
+        background-size: 64px;
+        height: 100vh;
+        width: 100vw;
+        image-rendering: crisp-edges;
+        image-rendering: -moz-crisp-edges; /* Firefox */
+        image-rendering: -o-crisp-edges; /* Opera */
+        image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming)*/
+        -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+      }
+      .crash-inner {
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .error-header {
+        font-size: 18px;
+        font-family: 'Minecraft Regular';
+        color: #aaaaaa;
+        width: 100%;
+        text-align: center;
+        padding: 16px 0;
+      }
+      .error-message {
+        font-size: 18px;
+        font-family: 'Minecraft Regular';
+        color: #ffffff;
+        width: 100%;
+        text-align: center;
+        padding-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="end-sky" id="queue">
+      <div class="end-sky-inner">
+        <div class="chat-box">
+          <ul class="chat">
+            <li id="chat-box"></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="crash" id="crash" hidden>
+      <div class="crash-inner">
+        <div>
+          <div class="error-header">Failed to connect to the server</div>
+          <div class="error-message" id="error-message"></div>
+          <a href="" onclick="window.reload()">
+            <img src="./back.png" width="350" height="35" onmouseout="this.src = './back.png'" onmouseover="this.src = './back_hover.png'"/>
+          </a>
+        </div>
+      </div>
+    </div>
+    <script>
+      let queuePosition = Math.floor(Math.random() * 500) + 200;
+      let tickInterval = 10000;
+      let crashChance = 20; // 1 in 20
+      let countDownChance = 2; // 1 in 2
+      if (window.localStorage.isCute === "true") {
+        document.getElementById('error-message').innerText = 'you\'re too cute to join this server'
+      } else {
+        document.getElementById('error-message').innerText = '2b2t is full'
+      }
+      $('#chat-box').text('2b2t is full');
+      fade();
+      setInterval(() => {
+        if (Math.random() * crashChance < 1) {
+          crash();
+        } else {
+          countDown();
+        }
+      }, tickInterval);
+      function countDown() {
+        queuePosition -= Math.floor(Math.random() * queuePosition * 0.01 * 5);
+        if (queuePosition <= 1) {
+          crash();
+        } else {
+          message();
+        }
+      }
+      function fade() {
+        setTimeout(() => {
+          $('#chat-box').fadeOut((10000 / 20) * 3);
+        }, (10000 / 20) * 16);
+      }
+      function message() {
+        $('#chat-box').fadeIn(0);
+        $('#chat-box').text(`Position in queue: ${queuePosition}`);
+        fade();
+      }
+      function crash() {
+        $('#queue').hide();
+        $('#crash').show();
+      }
+      
+    </script>
+  </body>
+</html>
